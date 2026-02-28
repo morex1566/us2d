@@ -12,6 +12,14 @@
 /[Uu]ser[Ss]ettings/
 *.log
 
+# Assets 내 모든 Resources 폴더 무시
+/[Aa]ssets/**/[Rr]esources/
+/[Aa]ssets/**/[Rr]esources.meta
+
+# Assets 내 모든 Adds 폴더 무시
+/[Aa]ssets/**/[Aa]dds/
+/[Aa]ssets/**/[Aa]dds.meta
+
 # By default unity supports Blender asset imports, *.blend1 blender files do not need to be commited to version control.
 *.blend1
 *.blend1.meta
