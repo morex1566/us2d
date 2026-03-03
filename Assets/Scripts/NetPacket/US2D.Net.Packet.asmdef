@@ -1,0 +1,16 @@
+{
+    "name": "US2D.Net.Packet",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0f2a459bb3b632b4fade22dfc8a9d971"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
