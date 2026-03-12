@@ -1,4 +1,7 @@
 
+using UnityEditorInternal;
+using UnityEngine;
+
 namespace NetCommon
 {
     /// <summary>
@@ -16,7 +19,26 @@ namespace NetCommon
             return _instance;
         }
 
+        protected static T _instance = null;
+    }
 
-        protected static T _instance;
+    public class MonoBehaviourSingleton<T> : MonoBehaviour where T : MonoBehaviour
+    {
+        public static T GetInstance()
+        {
+            if (_instanceObj == null && _instance == null)
+            {
+                _instanceObj = new(nameof(T));
+                {
+                    _instance = _instanceObj.AddComponent<T>();
+                }
+            }
+
+            return _instance;
+        }
+
+        protected static GameObject _instanceObj = null;
+
+        protected static T _instance = null;
     }
 }

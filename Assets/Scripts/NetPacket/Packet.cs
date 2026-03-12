@@ -33,7 +33,7 @@ namespace NetPacket
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct PacketHeader
     {
-        public PacketType Type;
+        public PacketType TypeId;
 
         public int ConnectionId;
 
@@ -70,7 +70,7 @@ namespace NetPacket
         /// <summary>
         /// 헤더와 페이로드를 포함한 전체 패킷 버퍼 생성
         /// </summary>
-        //public static byte[] Serialize(PacketType type, IMessage payload)
+        //public static byte[] Serialize(PacketType typeId, IMessage payload)
         //{
         //    int payloadSize = (payload != null) ? (int)payload.CalculateSize() : 0;
         //    int headerSize = Marshal.SizeOf<PacketHeader>();
@@ -79,7 +79,7 @@ namespace NetPacket
         //    // 헤더 데이터 준비
         //    PacketHeader header = new PacketHeader();
         //    {
-        //        header.Type = type;
+        //        header.TypeId = typeId;
         //        header.payloadSize = payloadSize;
         //    }
 
@@ -113,7 +113,7 @@ namespace NetPacket
         //    return totalBuffer;
         //}
 
-        public static unsafe PacketMemoryOwner Serialize(PacketType type, IMessage payload)
+        public static unsafe PacketMemoryOwner Serialize(PacketType typeId, IMessage payload)
         {
             int payloadSize = (payload != null) ? (int)payload.CalculateSize() : 0;
 
@@ -121,13 +121,16 @@ namespace NetPacket
             IMemoryOwner<byte> headerOwner = MemoryPool<byte>.Shared.Rent(HeaderSize);
             IMemoryOwner<byte> payloadOwner = (payloadSize > 0) ? MemoryPool<byte>.Shared.Rent(payloadSize) : null;
 
-            // 1. 헤더 직렬화 (포인터 직접 복사)
+            // 헤더 직렬화 (포인터 직접 복사)
             fixed (byte* ptr = &headerOwner.Memory.Span[0])
             {
-                *(PacketHeader*)ptr = new PacketHeader { Type = type, payloadSize = payloadSize };
+                *(PacketHeader*)ptr = new PacketHeader()
+                {
+                    TypeId = typeId
+                };
             }
 
-            // 2. 페이로드 직렬화
+            // 페이로드 직렬화
             if (payload != null && payloadSize > 0)
             {
                 // MemoryMarshall을 이용해 렌트한 버퍼의 실제 배열에 직접 접근 (추가 할당 없음)
@@ -166,6 +169,13 @@ namespace NetPacket
             { PacketType.Transformation, transformation.Parser },
             { PacketType.Chat, chat.Parser },
             { PacketType.ServerStats, server_stats.Parser }
+        };
+
+        public static readonly Dictionary<PacketType, Func<byte[], IMessage>> DeserializeMap = new Dictionary<PacketType, Func<byte[], IMessage>>
+        {
+            { PacketType.Transformation, Deserialize<transformation> },
+            { PacketType.Chat, Deserialize<chat> },
+            { PacketType.ServerStats, Deserialize<server_stats> }
         };
     }
 }

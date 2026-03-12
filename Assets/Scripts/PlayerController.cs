@@ -1,3 +1,4 @@
+using Google.Protobuf;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,7 +7,7 @@ public static class PlayerAnimationStatus
     public static readonly int IsMoving = Animator.StringToHash("IsMoving");
 }
 
-public class PlayerController : MonoBehaviour
+public partial class PlayerController : MonoBehaviour
 {
     [SerializeField] private Animator animator = null;
 
@@ -21,7 +22,6 @@ public class PlayerController : MonoBehaviour
     Vector2 inputDirection = Vector2.zero;
 
     Vector2 prevInputDirection = Vector2.zero;
-
 
 
     private void Awake()
@@ -40,9 +40,16 @@ public class PlayerController : MonoBehaviour
         UpdateAnimation();
     }
 
-    public void OnMove(InputValue value)
+    private void OnMoveInput(InputValue value)
     {
         inputDirection = value.Get<Vector2>();
+    }
+
+    [NetSendMessage(NetPacket.PacketType.Transformation)]
+    public partial void Move(IMessage<transformation> c2sPayload);
+
+    private void MoveImpl(IMessage<transformation> c2sPayload)
+    {
         isMoving = inputDirection.magnitude > 0;
 
         if (isMoving)

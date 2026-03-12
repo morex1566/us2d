@@ -1,21 +1,21 @@
+using Google.Protobuf;
+using Net.Protocol;
 using NetPacket;
 using UnityEngine;
 
-namespace NetCore
+public static partial class NetLogic
 {
-    public static class NetLogic
+    [NetReceivedMessage(NetPacket.PacketType.Transformation)]
+    public static void MoveCharacter(IMessage<transformation> s2cPayload)
     {
-        public static TCP tcp;
 
-        public static void NetMoveCharacter(int instanceId, Vector2 speed)
-        {
-            transformation transform = new();
-            {
-                transform.X = speed.x;
-                transform.Y = speed.y;
-            }
-
-            tcp.AsyncSend(PacketType.Transformation, transform);
-        }
     }
+
+    [NetReceivedMessage(NetPacket.PacketType.Chat)]
+    public static void Chat(IMessage<chat> s2cPayload)
+    {
+
+    }
+
+    public static partial void Dispatch(PacketHeader header, IMessage payload);
 }

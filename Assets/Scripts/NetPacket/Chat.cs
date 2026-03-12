@@ -32,7 +32,7 @@ namespace Net.Protocol {
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Net.Protocol.chat_type), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Net.Protocol.chat), global::Net.Protocol.chat.Parser, new[]{ "Type", "SenderId", "Content", "Timestamp" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Net.Protocol.chat), global::Net.Protocol.chat.Parser, new[]{ "TypeId", "SenderId", "Content", "Timestamp" }, null, null, null, null)
           }));
     }
     #endregion

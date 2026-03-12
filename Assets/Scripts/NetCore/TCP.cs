@@ -5,12 +5,13 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using System.Collections.Concurrent;
 
 namespace NetCore
 {
     /// <summary>
     /// IOContext 기반 비동기 TCP 클라이언트.
-    /// Connect / Receive / AsyncSend 완료 콜백을 IOContext.Post() 로 전달.
+    /// Connect / Receive / Send 완료 콜백을 IOContext.Post() 로 전달.
     /// </summary>
     public class TCP : Singleton<TCP>
     {
@@ -58,36 +59,35 @@ namespace NetCore
         }
 
         /// <summary>
-        /// 소켓 닫기
+        /// 연결 해제
         /// </summary>
         public void Disconnect()
         {
-            if (_socket == null)
+            if (_connection != null)
             {
-                return;
+                _connection.Dispose();
+                _connection = null;
             }
            
             _socket.Close();
         }
 
-        public void AsyncSend(PacketType type, Google.Protobuf.IMessage msg)
+        public void Send(PacketType type, Google.Protobuf.IMessage msg)
         {
             var packetMemoryOwner = PacketUtility.Serialize(type, msg);
 
-            // AsyncSend 한계 확인
+            // Send 한계 확인
             if (!_connection.SendQueue.TryAdd(packetMemoryOwner))
             {
-                Log.Trace("send queue is overflowed.");
+                Log.Trace("[Error][Network101] QueueFull.");
+                Disconnect();
                 return;
             }
-
-            // 쓰기 실행
-            _connection.AsyncWrite();
         }
 
-        public void AsyncReceive()
+        public BlockingCollection<PacketMemoryOwner> Receive()
         {
-
+            return _connection.RecvQueue;
         }
 
         /// <summary>
@@ -99,8 +99,17 @@ namespace NetCore
             int currConnectionId = Volatile.Read(ref _connectionId);
             Volatile.Write(ref _connectionId, _connectionId + 1);
 
-            // [수정] Connection 생성 시 세그먼트 풀 전달
+            // 이전 연결이 있다면 해제
+            if (_connection != null)
+            {
+                Disconnect();
+            }
+
+            // 새로운 연결 생성
             _connection = new Connection(_context, _socket, currConnectionId);
+            {
+                _connection.Init();
+            }
 
             Debug.Log("Connection Completed.");
         }
