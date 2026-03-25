@@ -1,0 +1,11 @@
+C:\Users\morex\Documents\us2d\External\NetMesssage\NetMesssage\bin\Release\netstandard2.0\NetMesssage.deps.json
+C:\Users\morex\Documents\us2d\External\NetMesssage\NetMesssage\bin\Release\netstandard2.0\NetMesssage.dll
+C:\Users\morex\Documents\us2d\External\NetMesssage\NetMesssage\bin\Release\netstandard2.0\NetMesssage.pdb
+C:\Users\morex\Documents\us2d\External\NetMesssage\NetMesssage\obj\Release\netstandard2.0\NetMesssage.csproj.AssemblyReference.cache
+C:\Users\morex\Documents\us2d\External\NetMesssage\NetMesssage\obj\Release\netstandard2.0\NetMesssage.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\morex\Documents\us2d\External\NetMesssage\NetMesssage\obj\Release\netstandard2.0\NetMesssage.AssemblyInfoInputs.cache
+C:\Users\morex\Documents\us2d\External\NetMesssage\NetMesssage\obj\Release\netstandard2.0\NetMesssage.AssemblyInfo.cs
+C:\Users\morex\Documents\us2d\External\NetMesssage\NetMesssage\obj\Release\netstandard2.0\NetMesssage.csproj.CoreCompileInputs.cache
+C:\Users\morex\Documents\us2d\External\NetMesssage\NetMesssage\obj\Release\netstandard2.0\NetMesssage.sourcelink.json
+C:\Users\morex\Documents\us2d\External\NetMesssage\NetMesssage\obj\Release\netstandard2.0\NetMesssage.dll
+C:\Users\morex\Documents\us2d\External\NetMesssage\NetMesssage\obj\Release\netstandard2.0\NetMesssage.pdb
