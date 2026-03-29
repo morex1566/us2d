@@ -40,8 +40,10 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;      
         
         var canvasScalar = referenceCanvasInstanceObj.AddComponent<CanvasScaler>();
-        canvasScalar.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        canvasScalar.referenceResolution = new Vector2();
+        {
+            canvasScalar.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            canvasScalar.referenceResolution = new Vector2(float.Parse(UnityConstant.Config.Resolution_Width), float.Parse(UnityConstant.Config.Resolution_Height));
+        }
 
         // 전용 리스너 추가
         refResolutionCanvas = referenceCanvasInstanceObj.AddComponent<ReferenceResolutionCanvas>();

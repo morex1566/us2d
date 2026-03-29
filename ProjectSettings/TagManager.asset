@@ -7,6 +7,8 @@ TagManager:
   - OverlayCamera
   - BaseCamera
   - ResolutionReference
+  - CameraCanvas
+  - OverlayCanvas
   layers:
   - Default
   - TransparentFX

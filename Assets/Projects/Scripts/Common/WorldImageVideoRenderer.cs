@@ -24,8 +24,7 @@ public class WorldImageVideoRenderer : MonoBehaviour
 
         spriter = GetComponent<SpriteRenderer>();
         {
-            spriter.sprite = targetSprite;
-            
+            targetSprite = spriter.sprite;
         }
     }
 

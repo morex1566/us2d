@@ -4,13 +4,13 @@ using UnityEngine.SceneManagement;
 
 public class SceneManager : MonoBehaviourSingleton<SceneManager>
 {
-    [SerializeField] private SceneManagerSetting setting;
+    [SerializeField] private SceneManagerSettings setting;
 
-    public static SceneManagerSetting Setting => instance.setting;
+    public static SceneManagerSettings Setting => instance.setting;
 
     public void OnEnable()
     {
-        setting = Resources.Load<SceneManagerSetting>(AssetPath.SceneManagerSetting);
+        setting = Resources.Load<SceneManagerSettings>(AssetPath.SceneManagerSettings);
     }
 
     public void OnDisable()

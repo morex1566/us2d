@@ -29,7 +29,7 @@ public class TextBlinker : MonoBehaviour
         // 1. 투명도를 0으로 변경
         // 2. 무한 반복(-1) 및 왕복(Yoyo) 설정
         // 3. 부드러운 전환을 위해 Ease 설정 (선택 사항)
-        text.DOFade(0.1f, duration)
+        text.DOFade(0.02f, duration)
                    .SetLoops(-1, LoopType.Yoyo)
                    .SetEase(Ease.InOutSine);
     }

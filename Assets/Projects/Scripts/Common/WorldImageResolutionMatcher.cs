@@ -1,12 +1,16 @@
 using UnityEngine;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class WorldImageResolutionMatcher : MonoBehaviour
 {
     private Vector3 initialScale;
 
+    private Sprite sprite;
+
     private void Awake()
     {
         initialScale = transform.localScale;
+        sprite = GetComponent<SpriteRenderer>().sprite;
     }
 
     private void OnEnable()
@@ -24,6 +28,8 @@ public class WorldImageResolutionMatcher : MonoBehaviour
     {
         // 초기 해상도에 맞춰 1회 실행
         UpdateScale(Screen.width, Screen.height);
+
+        Debug.Log(sprite.texture.texelSize);
     }
 
     private void UpdateScale(float width, float height)

@@ -4,9 +4,9 @@ using DG.Tweening.Plugins.Options;
 using System;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
+using TMPro;
 
-public class ImageFader : MonoBehaviour
+public class TextFader : MonoBehaviour
 {
     public enum ExecutionType
     { 
@@ -14,7 +14,7 @@ public class ImageFader : MonoBehaviour
         Invoke
     }
 
-    [SerializeField] private Image image;
+    [SerializeField] private TextMeshProUGUI text;
 
     // Fade되는데 걸리는 시간
     [SerializeField] private float duration = 2f;
@@ -25,11 +25,14 @@ public class ImageFader : MonoBehaviour
 
     public UnityEvent OnFadeCompleted = new();
 
-    private TweenerCore<Color, Color, ColorOptions> fading;
+    private Tweener fading;
 
     private void Awake()
     {
-        image = GetComponent<Image>();
+        if (text == null)
+        {
+            text = GetComponent<TextMeshProUGUI>();
+        }
     }
 
     private void Start()
@@ -51,12 +54,12 @@ public class ImageFader : MonoBehaviour
 
     public void StartFade(Action onCompleted = null)
     {
-        if (image == null)
+        if (text == null)
         {
             return;
         }
 
-        fading = image.DOFade(endAlpha, duration).OnComplete(() => 
+        fading = text.DOFade(endAlpha, duration).OnComplete(() => 
         {
             onCompleted?.Invoke();
             OnFadeCompleted?.Invoke();
@@ -65,7 +68,10 @@ public class ImageFader : MonoBehaviour
 
     public void StopFade()
     {
-        image.DOKill();
-        image.color = new Color(image.color.r, image.color.g, image.color.b, 1f);
+        text.DOKill();
+        // 알파값만 1로 복구
+        Color color = text.color;
+        color.a = 1f;
+        text.color = color;
     }
 }
