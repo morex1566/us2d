@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using TMPro;
 using UnityEditor.VersionControl;
@@ -23,6 +24,11 @@ public class TitleSceneManager : MonoBehaviour
     [Space(10), Header("Press To Continue")]
 
     [SerializeField] private GameObject guideMessagePf;
+    [SerializeField] private GameObject backgroundObj;
+    [SerializeField] private GameObject titleNameObj;
+    [SerializeField] private GameObject fadeOutScreenPf;
+
+    private GameObject fadeOutScreenObj;
     private GameObject guideMessageObj;
     public UnityEvent OnGuideMessagePressed = new();
 
@@ -57,6 +63,8 @@ public class TitleSceneManager : MonoBehaviour
         OnFadeInScreenCompleted.AddListener(OnInstantiateGuideMessage);
 
         OnGuideMessagePressed.AddListener(OnCheckIntegrity);
+        OnGuideMessagePressed.AddListener(OnDecreasePixelScaleGradually);
+        OnGuideMessagePressed.AddListener(OnInstantiateFadeOutScreen);
     }
 
     private void OnDisable()
@@ -82,6 +90,36 @@ public class TitleSceneManager : MonoBehaviour
             Button button = guideMessageObj.GetComponentInChildren<Button>();
             button.onClick.AddListener(InvokePressToContinue);
         }
+    }
+
+    // 화면이 점점 픽셀화 되어감
+    private void OnDecreasePixelScaleGradually()
+    {
+        var backgroundPixelizer = backgroundObj.GetComponentInChildren<ImagePixelizer>();
+        if (backgroundPixelizer != null)
+        {
+            backgroundPixelizer.PixelScale = 512f;
+            DOTween.To(() => backgroundPixelizer.PixelScale, x => backgroundPixelizer.PixelScale = x, 32f, 1.4f).SetEase(Ease.OutQuad);
+        }
+
+        var titleNamePixelizer = titleNameObj.GetComponentInChildren<ImagePixelizer>();
+        if (titleNamePixelizer != null)
+        {
+            titleNamePixelizer.PixelScale = 512f;
+            DOTween.To(() => titleNamePixelizer.PixelScale, x => titleNamePixelizer.PixelScale = x, 32f, 1.4f).SetEase(Ease.OutQuad);
+        }
+
+        var guideMessagePixelizer = guideMessageObj.GetComponentInChildren<TextPixelizer>();
+        if (guideMessagePixelizer != null)
+        {
+            guideMessagePixelizer.PixelScale = 512f;
+            DOTween.To(() => guideMessagePixelizer.PixelScale, x => guideMessagePixelizer.PixelScale = x, 32f, 1.4f).SetEase(Ease.OutQuad);
+        }
+    }
+
+    private void OnInstantiateFadeOutScreen()
+    {
+        fadeOutScreenObj = Instantiate(fadeOutScreenPf, overlayCanvas.transform, false);
     }
 
     // 서버의 Manifest와 비교

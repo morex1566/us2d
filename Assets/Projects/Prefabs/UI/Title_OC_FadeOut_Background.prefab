@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7874072357854521233
 RectTransform:
   m_ObjectHideFlags: 0
@@ -89,6 +89,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ImageFader
   image: {fileID: 4053052010411812205}
-  duration: 1
+  duration: 1.5
   endAlpha: 1
   executionType: 0
+  OnFadeCompleted:
+    m_PersistentCalls:
+      m_Calls: []
