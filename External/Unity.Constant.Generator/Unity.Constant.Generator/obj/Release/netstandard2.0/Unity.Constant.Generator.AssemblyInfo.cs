@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Unity.Constant.Generator")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b4b94d57116bc4a6553260bc5fc78365e8ae26c8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8f03350018ab2d7734dfdfe4ae9f0f358b0c294b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Unity.Constant.Generator")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Unity.Constant.Generator")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

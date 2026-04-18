@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\morex\\Documents\\us2d_client\\External\\Unity.Constant.Generator\\Unity.Constant.Generator\\Unity.Constant.Generator.csproj": {}
+    "D:\\Devs\\us2d_client\\External\\Unity.Constant.Generator\\Unity.Constant.Generator\\Unity.Constant.Generator.csproj": {}
   },
   "projects": {
-    "C:\\Users\\morex\\Documents\\us2d_client\\External\\Unity.Constant.Generator\\Unity.Constant.Generator\\Unity.Constant.Generator.csproj": {
+    "D:\\Devs\\us2d_client\\External\\Unity.Constant.Generator\\Unity.Constant.Generator\\Unity.Constant.Generator.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\morex\\Documents\\us2d_client\\External\\Unity.Constant.Generator\\Unity.Constant.Generator\\Unity.Constant.Generator.csproj",
+        "projectUniqueName": "D:\\Devs\\us2d_client\\External\\Unity.Constant.Generator\\Unity.Constant.Generator\\Unity.Constant.Generator.csproj",
         "projectName": "Unity.Constant.Generator",
-        "projectPath": "C:\\Users\\morex\\Documents\\us2d_client\\External\\Unity.Constant.Generator\\Unity.Constant.Generator\\Unity.Constant.Generator.csproj",
+        "projectPath": "D:\\Devs\\us2d_client\\External\\Unity.Constant.Generator\\Unity.Constant.Generator\\Unity.Constant.Generator.csproj",
         "packagesPath": "C:\\Users\\morex\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\morex\\Documents\\us2d_client\\External\\Unity.Constant.Generator\\Unity.Constant.Generator\\obj\\",
+        "outputPath": "D:\\Devs\\us2d_client\\External\\Unity.Constant.Generator\\Unity.Constant.Generator\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\morex\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -80,7 +80,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.311\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312\\RuntimeIdentifierGraph.json"
         }
       }
     }

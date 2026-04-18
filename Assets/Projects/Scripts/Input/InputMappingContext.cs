@@ -471,7 +471,7 @@ public partial class @InputMappingContext: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""795cbda5-bd55-4745-b7ad-360b56fa6900"",
-                    ""path"": ""<Pointer>/delta"",
+                    ""path"": ""<Mouse>/radius"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse;Touch"",
@@ -690,7 +690,7 @@ public partial class @InputMappingContext: IInputActionCollection2, IDisposable
                     ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""834a220c-6d0a-43a3-b570-56906332d473"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Hold"",
                     ""initialStateCheck"": false
@@ -899,7 +899,7 @@ public partial class @InputMappingContext: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""d2a6b46a-bc75-415b-91d7-e11820288957"",
-                    ""path"": ""<Pointer>/delta"",
+                    ""path"": ""<Pointer>/position"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse;Touch"",

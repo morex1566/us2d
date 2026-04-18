@@ -20,6 +20,9 @@ TagManager:
   - 
   - 
   - 
+  - Player
+  - Ally
+  - Enemy
   - 
   - 
   - 
@@ -27,10 +30,7 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - Projectile
   - 
   - 
   - 
