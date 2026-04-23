@@ -8,16 +8,13 @@ public class Player : Creature
 {
     public PlayerStateMachine StateMachine { get; private set; } = null;
 
-    public Vector2 MoveDirection { get; set; } = Vector2.zero;
+    public Vector3 MoveDirection { get; set; } = Vector3.right;
 
     public Vector2 LookDirection { get; set; } = Vector2.right;
 
-    public bool IsRollRequested { get; set; } = false;
 
-    public bool IsGroggyRequested { get; set; } = false;
 
-    public bool IsDeadRequested { get; set; } = false;
-
+    public new PlayerData Data => base.Data as PlayerData;
 
 
 

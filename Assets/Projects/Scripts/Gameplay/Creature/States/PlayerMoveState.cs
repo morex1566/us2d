@@ -14,6 +14,8 @@ public class PlayerMoveState : PlayerState
 
     private void SetMoveDirection(PlayerInputSnapshot inputSnapshot)
     {
+        if (inputSnapshot.move.IsNearlyZero()) return;
+
         Player.MoveDirection = inputSnapshot.move.normalized;
     }
 

@@ -5,7 +5,7 @@ public abstract class WeaponAttachmentData : ScriptableObject
     [field: SerializeField] public int Price { get; set; } = 0;
 }
 
-[CreateAssetMenu(fileName = "WeaponMagData", menuName = "Scriptable Objects/Weapon Attachment")]
+[CreateAssetMenu(fileName = "WeaponMagData", menuName = "Scriptable Objects/Weapon Attachment/Weapon Mag")]
 public class WeaponMagData : WeaponAttachmentData
 {
     [Header("Setup")]
@@ -23,7 +23,7 @@ public class WeaponMagData : WeaponAttachmentData
 
 
 
-[CreateAssetMenu(fileName = "GripData", menuName = "Scriptable Objects/Weapon Attachment")]
+[CreateAssetMenu(fileName = "GripData", menuName = "Scriptable Objects/Weapon Attachment/Grip")]
 public class GripData : WeaponAttachmentData
 {
     [Header("Setup")]
@@ -32,18 +32,7 @@ public class GripData : WeaponAttachmentData
 
 
 
-[CreateAssetMenu(fileName = "BodyData", menuName = "Scriptable Objects/Weapon Attachment")]
-public class BodyData : WeaponAttachmentData
-{
-    [Header("Setup")]
-    [field: SerializeField] public WeaponAttachmentBodyType BodyType { get; set; } = WeaponAttachmentBodyType.None;
-    [field: SerializeField] public float RPM { get; set; } = 200f;
-    [field: SerializeField] public float DamageRate { get; set; } = 1f;
-}
-
-
-
-[CreateAssetMenu(fileName = "MuzzleData", menuName = "Scriptable Objects/Weapon Attachment")]
+[CreateAssetMenu(fileName = "MuzzleData", menuName = "Scriptable Objects/Weapon Attachment/Muzzle")]
 public class MuzzleData : WeaponAttachmentData
 {
     [Header("Setup")]
@@ -55,11 +44,13 @@ public class MuzzleData : WeaponAttachmentData
 
 
 
-[CreateAssetMenu(fileName = "BarrelData", menuName = "Scriptable Objects/Weapon Attachment")]
-public class BarrelData : WeaponAttachmentData
+[CreateAssetMenu(fileName = "BarrelAssemblyData", menuName = "Scriptable Objects/Weapon Attachment/BarrelAssembly")]
+public class BarrelAssemblyData : WeaponAttachmentData
 {
     [Header("Setup")]
-    [field: SerializeField] public float BulletSpeedRate { get; set; } = 1f;
+    [field: SerializeField] public WeaponAttachmentBodyType BodyType { get; set; } = WeaponAttachmentBodyType.None;
+    [field: SerializeField] public float RPM { get; set; } = 200f;
+    [field: SerializeField] public float DamageRate { get; set; } = 1f;
 }
 
 

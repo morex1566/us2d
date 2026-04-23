@@ -486,7 +486,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCamera
   target: {fileID: 1890210586}
-  lerpThreshold: 10
+  lerpThreshold: 15
 --- !u!114 &923650614 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2075815918549511062, guid: 65e05b7d70e2c52409cca848338779b6, type: 3}

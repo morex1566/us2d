@@ -6,7 +6,7 @@ public class PlayerCamera : MonoBehaviour
     public Transform target;
 
     [Header("Setup")]
-    [Range(0, 10)] public float lerpThreshold = 0.1f;
+    [Range(0, 20)] public float lerpThreshold = 0.1f;
 
 
 

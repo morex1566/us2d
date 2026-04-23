@@ -101,6 +101,14 @@ public partial class PlayerController : MonoBehaviour, InputMappingContext.IPlay
     {
         player.StateMachine.Update(inputSnapshot.Consume());
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+
+        // MoveDirection
+        Gizmos.DrawLine(player.transform.position, player.transform.position + player.MoveDirection);
+    }
 }
 
 /// <summary>
