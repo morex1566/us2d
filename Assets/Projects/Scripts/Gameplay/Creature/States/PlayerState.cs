@@ -6,7 +6,8 @@ public enum PlayerStateType
     IDLE = 1,
     MOVE = 2,
     ROLL = 3,
-    DEAD = 4
+    DEAD = 4,
+    JUMP = 5
 }
 
 

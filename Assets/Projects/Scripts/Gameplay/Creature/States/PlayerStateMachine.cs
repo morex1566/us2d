@@ -20,6 +20,7 @@ public class PlayerStateMachine
         states.Add(PlayerStateType.IDLE, new PlayerIdleState(player));
         states.Add(PlayerStateType.MOVE, new PlayerMoveState(player));
         states.Add(PlayerStateType.ROLL, new PlayerRollState(player));
+        states.Add(PlayerStateType.JUMP, new PlayerJumpState(player));
         states.Add(PlayerStateType.DEAD, new PlayerDeadState(player));
 
         CurrentState = states[PlayerStateType.IDLE];

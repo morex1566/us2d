@@ -68,5 +68,11 @@ public class PlayerView : MonoBehaviour
             UnityConstant.Animator.Parameters.AC_Player.Bool.IsRoll,
             player.StateMachine.CurrentState.StateType == PlayerStateType.ROLL
         );
+
+        animator.SetBool
+        (
+            "IsJump",
+            player.StateMachine.CurrentState.StateType == PlayerStateType.JUMP
+        );
     }
 }

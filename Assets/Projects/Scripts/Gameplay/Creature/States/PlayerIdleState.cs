@@ -40,6 +40,13 @@ public class PlayerIdleState : PlayerState
             return;
         }
 
+        PlayerController controller = Utls.FindComponent<PlayerController>(Player.gameObject);
+        if (inputSnapshot.jumpPressed && controller != null && controller.IsGrounded)
+        {
+            Player.StateMachine.ChangeState(PlayerStateType.JUMP);
+            return;
+        }
+
         if (inputSnapshot.move.IsNotNearlyZero())
         {
             Player.StateMachine.ChangeState(PlayerStateType.MOVE);

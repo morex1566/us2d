@@ -16,6 +16,7 @@ public struct PlayerInputSnapshot
     public bool firePressed;
     public bool rollPressed;
     public bool reloadPressed;
+    public bool jumpPressed;
 
     public bool IsEmpty => Equals(default(PlayerInputSnapshot));
 
@@ -42,6 +43,18 @@ public partial class PlayerController : MonoBehaviour, InputMappingContext.IPlay
 
     private PlayerInputSnapshot inputSnapshot = new PlayerInputSnapshot();
 
+    [Header("Ground Check")]
+    [SerializeField] private UnityEngine.Transform groundCheck = null;
+    [SerializeField] private float groundCheckRadius = 0.08f;
+    [SerializeField] private float groundCheckExtraDistance = 0.02f;
+    [SerializeField] private LayerMask groundLayerMask = Physics2D.AllLayers;
+
+    public bool IsGrounded { get; private set; } = true;
+    public float GroundedY { get; private set; } = 0f;
+
+    private InputAction jumpAction = null;
+    private readonly Collider2D[] groundHits = new Collider2D[8];
+
 
 
 
@@ -57,6 +70,8 @@ public partial class PlayerController : MonoBehaviour, InputMappingContext.IPlay
     public event Action OnMoveTriggered;
 
     public event Action OnRollTriggered;
+
+    public event Action OnJumpTriggered;
 
     public event Action<UnityEngine.Transform, Vector2> OnLookTriggered;
 
@@ -77,37 +92,104 @@ public partial class PlayerController : MonoBehaviour, InputMappingContext.IPlay
 
     private void OnEnable()
     {
-        InputManager.InputMappingContext.Player.Move.performed += OnMove;
-        InputManager.InputMappingContext.Player.Move.canceled += OnMove;
-        InputManager.InputMappingContext.Player.Look.performed += OnLook;
-        InputManager.InputMappingContext.Player.Look.canceled += OnLook;
-        InputManager.InputMappingContext.Player.Fire.performed += OnFire;
-        InputManager.InputMappingContext.Player.Roll.performed += OnRoll;
-        InputManager.InputMappingContext.Player.Reload.performed += OnReload;
+        if (InputManager.InputMappingContext != null)
+        {
+            InputManager.InputMappingContext.Player.Move.performed += OnMove;
+            InputManager.InputMappingContext.Player.Move.canceled += OnMove;
+            InputManager.InputMappingContext.Player.Look.performed += OnLook;
+            InputManager.InputMappingContext.Player.Look.canceled += OnLook;
+            InputManager.InputMappingContext.Player.Fire.performed += OnFire;
+            InputManager.InputMappingContext.Player.Roll.performed += OnRoll;
+            InputManager.InputMappingContext.Player.Reload.performed += OnReload;
+
+            jumpAction = InputManager.InputMappingContext.asset.FindAction("Player/Jump", false);
+            if (jumpAction != null)
+            {
+                jumpAction.performed += OnJump;
+            }
+        }
     }
 
     private void OnDisable()
     {
-        InputManager.InputMappingContext.Player.Move.performed -= OnMove;
-        InputManager.InputMappingContext.Player.Move.canceled -= OnMove;
-        InputManager.InputMappingContext.Player.Look.performed -= OnLook;
-        InputManager.InputMappingContext.Player.Look.canceled -= OnLook;
-        InputManager.InputMappingContext.Player.Fire.performed -= OnFire;
-        InputManager.InputMappingContext.Player.Roll.performed -= OnRoll;
-        InputManager.InputMappingContext.Player.Reload.performed -= OnReload;
+        if (InputManager.InputMappingContext != null)
+        {
+            InputManager.InputMappingContext.Player.Move.performed -= OnMove;
+            InputManager.InputMappingContext.Player.Move.canceled -= OnMove;
+            InputManager.InputMappingContext.Player.Look.performed -= OnLook;
+            InputManager.InputMappingContext.Player.Look.canceled -= OnLook;
+            InputManager.InputMappingContext.Player.Fire.performed -= OnFire;
+            InputManager.InputMappingContext.Player.Roll.performed -= OnRoll;
+            InputManager.InputMappingContext.Player.Reload.performed -= OnReload;
+        }
+
+        if (jumpAction != null)
+        {
+            jumpAction.performed -= OnJump;
+            jumpAction = null;
+        }
     }
 
     private void Update()
     {
+        UpdateGrounded();
         player.StateMachine.Update(inputSnapshot.Consume());
+    }
+
+    private void UpdateGrounded()
+    {
+        Vector2 checkPos = GetGroundCheckPosition();
+
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.useTriggers = false;
+        filter.useLayerMask = true;
+        filter.layerMask = GetGroundCheckLayerMask();
+
+        int count = Physics2D.OverlapCircle(checkPos, groundCheckRadius, filter, groundHits);
+
+        IsGrounded = count > 0;
+        if (IsGrounded)
+        {
+            GroundedY = transform.position.y;
+        }
+    }
+
+    private Vector2 GetGroundCheckPosition()
+    {
+        if (groundCheck != null)
+        {
+            return groundCheck.position;
+        }
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+        {
+            return new Vector2(col.bounds.center.x, col.bounds.min.y - groundCheckExtraDistance);
+        }
+
+        return (Vector2)transform.position + Vector2.down * 0.25f;
+    }
+
+    private LayerMask GetGroundCheckLayerMask()
+    {
+        int mask = groundLayerMask.value;
+        mask &= ~(1 << gameObject.layer);
+        return mask;
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
 
-        // MoveDirection
-        Gizmos.DrawLine(player.transform.position, player.transform.position + player.MoveDirection);
+        if (player != null)
+        {
+            // MoveDirection
+            Gizmos.DrawLine(player.transform.position, player.transform.position + player.MoveDirection);
+        }
+
+        Vector3 groundPos = GetGroundCheckPosition();
+        Gizmos.color = IsGrounded ? Color.cyan : Color.red;
+        Gizmos.DrawWireSphere(groundPos, groundCheckRadius);
     }
 }
 
@@ -144,6 +226,13 @@ public partial class PlayerController
         inputSnapshot.rollPressed = true;
 
         OnRollTriggered?.Invoke();
+    }
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        inputSnapshot.jumpPressed = true;
+
+        OnJumpTriggered?.Invoke();
     }
 
     public void OnReload(InputAction.CallbackContext context)
