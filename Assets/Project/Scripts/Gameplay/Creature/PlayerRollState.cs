@@ -49,6 +49,11 @@ public class PlayerRollState : PlayerState
 
     protected override void SetMoveDirection(InputSnapshot inputSnapshot)
     {
+        if (inputSnapshot.move.IsNearlyZero())
+        {
+            return; // 입력이 없으면 구르기 방향 유지
+        }
+
         if (animator == null)
         {
             return; // Animator가 없으면 구르기 방향 잠금 구간을 판단할 수 없음
@@ -63,14 +68,7 @@ public class PlayerRollState : PlayerState
 
         Vector3 input = inputSnapshot.move.normalized;
         Vector3 nextDirection = new Vector3(input.x, 0f, input.y);
-        Vector3 lerpedDirection = Vector3.Lerp(Controller.CurrMoveDirection, nextDirection, Time.deltaTime * 10f);
-
-        if (inputSnapshot.move.IsNotNearlyZero())
-        {
-            Controller.PrevMoveDirection = Controller.CurrMoveDirection;
-        }
-
-        Controller.CurrMoveDirection = lerpedDirection;
+        Controller.CurrMoveDirection = Vector3.Lerp(Controller.CurrMoveDirection, nextDirection, Time.deltaTime * 10f);
     }
 
     public override PlayerStateType? Evaluate(InputSnapshot inputSnapshot)

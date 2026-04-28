@@ -32,27 +32,19 @@ public abstract class PlayerState : IState<PlayerStateType>
 
     protected virtual void SetMoveDirection(InputSnapshot inputSnapshot)
     {
-        Vector3 input = inputSnapshot.move.normalized;
-        Vector3 nextDirection = new Vector3(input.x, 0f, input.y);
-
-        if (inputSnapshot.move.IsNotNearlyZero())
+        if (inputSnapshot.move.IsNearlyZero())
         {
-            Controller.PrevMoveDirection = Controller.CurrMoveDirection;
+            return; // 이동 입력이 없으면 현재 이동 방향 유지
         }
 
-        Controller.CurrMoveDirection = nextDirection;
+        Vector3 input = inputSnapshot.move.normalized;
+        Controller.CurrMoveDirection = new Vector3(input.x, 0f, input.y);
     }
 
     protected virtual void SetLookDirection(InputSnapshot inputSnapshot)
     {
         Vector3 lookDirection = Utls.GetMouseWorldPosition() - Controller.transform.position;
         lookDirection.z = 0f;
-
-        if (inputSnapshot.look.IsNotNearlyZero())
-        {
-            Controller.PrevLookDirection = Controller.CurrLookDirection;
-        }
-
         Controller.CurrLookDirection = lookDirection.normalized;
     }
 

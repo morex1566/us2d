@@ -80,6 +80,15 @@ public partial class MeleeWeaponController : WeaponController
     {
         playerController.OnAttackTriggered -= OnAttack;
     }
+
+    private void OnDrawGizmos()
+    {
+        if (playerController)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(playerController.SpringArm.PivotTransform.position, transform.position);
+        }
+    }
 }
 
 
