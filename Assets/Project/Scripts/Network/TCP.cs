@@ -1,128 +1,195 @@
-using Google.FlatBuffers;
+using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using US2D.Network;
+using TRPG.Runtime;
+using System.Threading;
 
-namespace US2D.Network.Core
+namespace TRPG.Runtime.Network
 {
     /// <summary>
-    /// IOContext 기반 비동기 TCP 클라이언트.
-    /// Connect / Receive / Send 완료 콜백을 IOContext.Post() 로 전달.
+    /// Oracle trpg_server에 연결하거나, listen-server의 host/client로 사용되는 TCP 통신 클래스.
     /// </summary>
     public class TCP : Singleton<TCP>
     {
-        /// <summary>
-        /// Default constructor for Singleton
-        /// </summary>
-        public TCP()
-        {
+        private const int connectionTimeOutMs = 10000;
 
-        }
+        private Socket socket = null;
 
-        /// <summary>
-        /// TCP Instance Initialization
-        /// </summary>
-        public void Init(IOContext context, string host, int port)
-        {
-            _context = context;
-            _endpoint = new IPEndPoint(IPAddress.Parse(host), port);
-        }
+        private IPEndPoint endpoint = null;
+
+        private ConnectionStateType state = ConnectionStateType.Disconnected;
+
+        public ConnectionStateType State => state;
+
+
+
+
 
         /// <summary>
-        /// 서버에 비동기 연결 시도. 완료 시 IOContext.Post() 를 통해 onConnected 콜백 실행
+        /// TCP 연결 대상 초기화.
         /// </summary>
-        public void AsyncConnect()
+        public bool Init(string host, int port)
         {
-            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-            _socket.ConnectAsync(_endpoint).ContinueWith((Task task) =>
+            if (IPAddress.TryParse(host, out IPAddress address) == false)
             {
-                _context.Dispatch(() =>
+                Debug.LogError($"Invalid IP address: {host}");
+                return false;
+            }
+
+            if (port <= 0 || port > 65535)
+            {
+                Debug.LogError($"Invalid TCP port: {port}");
+                return false;
+            }
+
+            if (state != ConnectionStateType.Disconnected)
+            {
+                Disconnect();
+            }
+
+            endpoint = new IPEndPoint(address, port);
+            state = ConnectionStateType.Disconnected;
+
+            return true;
+        }
+
+
+
+
+
+        /// <summary>
+        /// Oracle trpg_server에 비동기 연결 시도.
+        /// </summary>
+        public async Task<bool> ConnectAsync()
+        {
+            if (state != ConnectionStateType.Disconnected)
+            {
+                Debug.LogWarning($"TCP is not disconnected. Current state: {state}");
+                return false;
+            }
+
+            if (endpoint == null)
+            {
+                Debug.LogError("TCP.Init() must be called.");
+                return false;
+            }
+
+            Socket connectSocket = CreateSocket();
+            state = ConnectionStateType.Connecting;
+
+            return CompleteConnect(connectSocket, await TryConnectAsync(connectSocket));
+        }
+
+        private Socket CreateSocket()
+        {
+            CloseSocket(ref socket);
+
+            Socket newSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            {
+                newSocket.NoDelay = true;
+            }
+
+            socket = newSocket;
+            return newSocket;
+        }
+
+        /// <summary>
+        /// 서버에 비동기 연결 시도.
+        /// </summary>
+        private async Task<bool> TryConnectAsync(Socket connectSocket)
+        {
+            try
+            {
+                await connectSocket.ConnectAsync(endpoint).WaitAsyncEx(connectionTimeOutMs);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"TCP socket connect failed. {e.Message}");
+                return false;
+            }
+        }
+
+        private bool CompleteConnect(Socket connectSocket, bool succeeded)
+        {
+            // 연결 중 소켓이 교체됨
+            if (socket != connectSocket)
+            {
+                CloseSocketImpl(connectSocket);
+                return false;
+            }
+
+            // 소켓 에러
+            if (!succeeded)
+            {
+                CloseSocket(ref socket);
+                state = ConnectionStateType.Disconnected;
+                return false;
+            }
+
+            state = ConnectionStateType.Connected;
+            return true;
+        }
+
+
+
+
+
+        /// <summary>
+        /// Oracle trpg_server와의 연결 해제.
+        /// </summary>
+        public bool Disconnect()
+        {
+            bool succeeded = CloseSocket(ref socket);
+            state = ConnectionStateType.Disconnected;
+
+            return succeeded;
+        }
+
+        private bool CloseSocket(ref Socket targetSocket)
+        {
+            Socket closeTarget = targetSocket;
+            targetSocket = null;
+
+            return CloseSocketImpl(closeTarget);
+        }
+
+        /// <summary>
+        /// 타겟 TCP 소켓 정리.
+        /// </summary>
+        /// <param name="closeTarget"></param>
+        private bool CloseSocketImpl(Socket closeTarget)
+        {
+            if (closeTarget == null) return true;
+
+            bool succeeded = true;
+
+            try
+            {
+                if (closeTarget.Connected)
                 {
-                    // 서버 연결 성공
-                    if (task.IsCompletedSuccessfully)
-                    {
-                        OnConnectCompleted();
-                    }
-                    // 서버 연결 실패
-                    else
-                    {
-                        OnConnectFailed();
-                    }
-                });
-            });
-        }
-
-        /// <summary>
-        /// 연결 해제 (소켓을 닫고 세션을 정리함)
-        /// </summary>
-        public void AsyncDisconnect()
-        {
-            if (IsDisconnectValid) return;
-
-            _socket.Shutdown(SocketShutdown.Both);
-            _socket.Close();
-            _context.Dispatch(OnDisconnectCompleted);
-        }
-
-        public FlatBufferBuilder Receive()
-        {
-            return _connection.RecvQueue;
-        }
-
-        /// <summary>
-        /// 해당 서버와 연결된 Connection 클래스 생성
-        /// </summary>
-        private void OnConnectCompleted()
-        {
-            // 연결 고유 id 받아옴
-            int currConnectionId = Volatile.Read(ref _connectionId);
-            Volatile.Write(ref _connectionId, _connectionId + 1);
-
-            // 이전 연결이 있다면 해제
-            if (_connection != null)
+                    closeTarget.Shutdown(SocketShutdown.Both);
+                }
+            }
+            catch (Exception e)
             {
-                AsyncDisconnect();
+                Debug.LogWarning($"TCP socket shutdown failed. {e.Message}");
             }
 
-            // 새로운 연결 생성
-            _connection = new Connection(_context, _socket, currConnectionId);
+            try
             {
-                _connection.Init();
+                closeTarget.Close();
+            }
+            catch (Exception e)
+            {
+                succeeded = false;
+                Debug.LogWarning($"TCP socket close failed. {e.Message}");
             }
 
-            Debug.Log("connect success.");
+            return succeeded;
         }
-
-        private void OnConnectFailed()
-        {
-            Debug.LogWarning("connect fail.");
-        }
-
-        private void OnDisconnectCompleted()
-        {
-            _socket = null;
-            _connection = null;
-
-            Debug.Log("disconnect success.");
-        }
-
-
-        private IOContext _context;
-
-        private Socket _socket;
-
-        private IPEndPoint _endpoint;
-
-        private Connection _connection;
-
-        private int _connectionId;
-
-        public bool IsConnected => _socket != null && _socket.Connected;
-
-        private bool IsDisconnectValid => _socket == null || !_socket.Connected;
     }
 }

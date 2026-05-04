@@ -1,19 +1,17 @@
 using UnityEngine;
-using US2D.Network;
 
-public class ResourceManager : MonoBehaviourSingleton<ResourceManager>
+namespace TRPG.Runtime
 {
-    [SerializeField] private ResourceManagerSettings setting;
-
-    public static ResourceManagerSettings Setting => GetInstance().setting;
-
-    public void OnEnable()
+    public class ResourceManager : MonoBehaviourSingleton<ResourceManager>
     {
-        setting = Resources.Load<ResourceManagerSettings>(AssetPath.ResourceManagerSettings);
-    }
+        private static ResourceManagerSettingsData data;
 
-    public void OnDisable()
-    {
-        Resources.UnloadAsset(setting);
+        public static void Init()
+        {
+            GetInstance();
+            {
+                data = Resources.Load<ResourceManagerSettingsData>("SO_ResourceManagerSettings");
+            }
+        }
     }
 }

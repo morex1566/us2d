@@ -1,41 +1,42 @@
 using UnityEngine;
-using US2D.Network;
 
-
-public struct InputSnapshot
+namespace TRPG.Runtime
 {
-    // Delta
-    public Vector2 move;
-    public Vector2 look;
-
-    // Trigger
-    public bool attackPressed;
-    public bool rollPressed;
-    public bool reloadPressed;
-
-    public bool IsEmpty => Equals(default(InputSnapshot));
-
-    public InputSnapshot Consume()
+    public struct InputSnapshot
     {
-        InputSnapshot value = this;
-        this = default;
-        move = value.move;
-        look = value.look;
+        // Delta
+        public Vector2 move;
+        public Vector2 look;
 
-        return value;
-    }
-}
+        // Trigger
+        public bool attackPressed;
+        public bool rollPressed;
+        public bool reloadPressed;
 
-public class InputManager : MonoBehaviourSingleton<InputManager>
-{
-    public static InputMappingContext InputMappingContext;
+        public bool IsEmpty => Equals(default(InputSnapshot));
 
-    public static void Init()
-    {
-        GetInstance();
+        public InputSnapshot Consume()
         {
-            InputMappingContext = new InputMappingContext();
-            InputMappingContext.Enable();
+            InputSnapshot value = this;
+            this = default;
+            move = value.move;
+            look = value.look;
+
+            return value;
+        }
+    }
+
+    public class InputManager : MonoBehaviourSingleton<InputManager>
+    {
+        public static InputMappingContext InputMappingContext;
+
+        public static void Init()
+        {
+            GetInstance();
+            {
+                InputMappingContext = new InputMappingContext();
+                InputMappingContext.Enable();
+            }
         }
     }
 }
